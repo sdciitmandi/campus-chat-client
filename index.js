@@ -4,10 +4,19 @@ var app = express();
 var http = require('http');
 var httpServer = http.Server(app);
 
-app.get('/',function(req,res) {
+var socketIO = require('socket.io');
+var io = socketIO(httpServer);
+
+app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-httpServer.listen(3000,function() {
+io.on('connection', function(socket){
+  socket.on('chat message', function(msg){
+    console.log('message: ' + msg);
+  });
+});
+
+httpServer.listen(3000, function() {
     console.log('Listening on *:3000');
 });
