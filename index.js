@@ -5,7 +5,7 @@ var http = require('http');
 var httpServer = http.Server(app);
 
 app.get('/',function(req,res) {
-    res.send('<h1>Hello World</h1>');
+    res.sendFile(__dirname + '/index.html');
 });
 
 httpServer.listen(3000,function() {
