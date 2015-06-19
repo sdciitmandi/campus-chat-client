@@ -51,6 +51,14 @@
     #messages li:nth-child(odd) {
         background: #eee;
     }
+
+    .sent-message {
+        color :red;
+    }
+    .received-message {
+        color : blue;
+    }
+
     </style>
 </head>
 
@@ -61,7 +69,7 @@
             <button>Send</button>
         </form>
     </ul>
-    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <!-- Can uncomment this when going in production <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script> -->
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -69,11 +77,12 @@
         var socket = io();
         $('form').submit(function() {
             socket.emit('chat message', $('#m').val());
+            $('#messages').append($('<li class = "sent-message">').text("Your Message : " + $('#m').val()));
             $('#m').val('');
             return false;
         });
         socket.on('chat message', function(msg) {
-            $('#messages').append($('<li>').text(msg));
+            $('#messages').append($('<li class = "received-message">').text("Stranger : " + msg));
         });
     });
     </script>
