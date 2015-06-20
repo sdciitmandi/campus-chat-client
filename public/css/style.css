@@ -1,12 +1,11 @@
 * {
     margin: 0;
     padding: 0;
-    box - sizing: border - box;
+    box-sizing: border-box;
 }
 
 body {
-    font: 13 px Helvetica,
-    Arial;
+    font: 13px Helvetica, Arial;
 }
 
 form {
@@ -31,29 +30,36 @@ form button {
     padding: 10px;
 }
 
+#message-container {
+    font-size: 16px;
+}
+
 #messages {
-    list - style - type: none;
+    list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
 #messages li {
-    padding: 5 px 10 px;
+    padding: 5px 10px;
 }
 
-#messages li: nth - child(odd) {
+#messages li:nth-child(odd) {
     background: #eee;
 }
 
 .sent-message {
-    color: red;
+    color: green;
 }
+
 .received-message {
     color: blue;
 }
+
 .welcome-message {
     color: black;
 }
+
 .disconnect-message {
-    color: black;
+    color: red;
 }
