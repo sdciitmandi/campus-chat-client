@@ -58,7 +58,12 @@
     .received-message {
         color : blue;
     }
-
+    .welcome-message {
+        color : black;
+    }
+    .disconnect-message {
+        color : black;
+    }
     </style>
 </head>
 
@@ -83,6 +88,12 @@
         });
         socket.on('chat message', function(msg) {
             $('#messages').append($('<li class = "received-message">').text("Stranger : " + msg));
+        });
+        socket.on('welcome message', function(msg) {
+            $('#messages').append($('<li class = "welcome-message">').text(msg));
+        });
+        socket.on('disconnect message', function(msg) {
+            $('#messages').append($('<li class = "disconnect-message">').text(msg));
         });
     });
     </script>

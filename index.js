@@ -24,8 +24,8 @@ io.on('connection', function(socket){
 		idmap[socket.id] = st1;
 		idmap[st1] = socket.id;
 		console.log('Conncected' + socket.id + '  to  ' + st1);
-		io.to(socket.id).emit('chat message',welcomeMessage);
-		io.to(st1).emit('chat message',welcomeMessage);
+		io.to(socket.id).emit('welcome message',welcomeMessage);
+		io.to(st1).emit('welcome message',welcomeMessage);
 	}
 	else {
 		freeUsers.push(socket.id);
@@ -33,15 +33,15 @@ io.on('connection', function(socket){
 	socket.on('disconnect', function() {
 		var st2 = idmap[socket.id];
 		if(st2) {
-			io.to(st2).emit('chat message',disconnectMessage);
+			io.to(st2).emit('disconnect message',disconnectMessage);
 			delete idmap[socket.id];
 			delete idmap[st2];
 			if(freeUsers.length) {
 				var st3 = freeUsers.shift();
 				idmap[st2] = st3;
 				idmap[st3] = st2;
-				io.to(st2).emit('chat message',welcomeMessage);
-				io.to(st3).emit('chat message',welcomeMessage);
+				io.to(st2).emit('welcome message',welcomeMessage);
+				io.to(st3).emit('welcome message',welcomeMessage);
 			}
 			else freeUsers.push(st2);
 		}
