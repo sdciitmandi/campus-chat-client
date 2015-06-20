@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var path = require("path");
-//Express does not deliever anything beyond route
+//Express does not deliver anything beyond route
 // So need to set it up to use the public directory for static content
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -27,7 +27,7 @@ io.on('connection', function(socket){
 		var st1 = freeUsers.shift(); // Remove the user who has been waiting longest
 		idmap[socket.id] = st1;
 		idmap[st1] = socket.id;
-		console.log('Conncected' + socket.id + '  to  ' + st1);
+		console.log('Connected' + socket.id + '  to  ' + st1);
 		io.to(socket.id).emit('welcome message',welcomeMessage);
 		io.to(st1).emit('welcome message',welcomeMessage);
 	}
