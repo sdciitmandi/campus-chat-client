@@ -1,5 +1,9 @@
 var express = require('express');
 var app = express();
+var path = require("path")
+//Express does not deliever anything beyond route
+// So need to set it up to use the public directory for static content
+app.use(express.static(path.join(__dirname, 'public')));
 
 var http = require('http');
 var httpServer = http.Server(app);
@@ -14,7 +18,7 @@ var welcomeMessage = "You are chatting with a random stranger, Say Hi!\n";
 var disconnectMessage = "Stranger has left. Please Reload this page or wait for us to connect you with someone.\n";
 
 app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/public/index.html');
 });
 
 io.on('connection', function(socket){
