@@ -11,7 +11,7 @@ npm install
 3. Check that the app works.
 4. Add the sdc repo as a remote
 ```shell
-git remote add upstram https://github.com/sdciitmandi/campus-chat-client.git
+git remote add upstream https://github.com/sdciitmandi/campus-chat-client.git
 ```
 5. Make all your changes in a new branch, with the branch name chosen according to the changes you are making.
 6. Push your changes to the repo in your github account.
