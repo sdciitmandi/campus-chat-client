@@ -1,6 +1,10 @@
+var compression = require("compression");
 var express = require('express');
 var app = express();
 var path = require("path");
+
+// Compress the responses delivered to save bandwidth
+app.use(compression());
 //Express does not deliver anything beyond route
 // So need to set it up to use the public directory for static content
 app.use(express.static(path.join(__dirname, 'public')));
