@@ -11,6 +11,7 @@ We are almost done with the basic structure. The app is now capable of the follo
 
 The following features are yet to be implemented:
 
+* Most importantly, make the message window auto scroll. Right now , if number of messages increase beyond the height of the message box, it becomes impossible to read them.
 * Implement a better style for the page, right now it is primitive in visual style.
 * If the user is not connected , his messages should not be accpped. Right now his messages are appended to the screen.
 * Implement User Groups. This is something with great potential if done properly. IRC has had this for long, but most people don't use it anyway.
