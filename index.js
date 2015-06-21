@@ -60,6 +60,7 @@ io.on('connection', function(socket){
   });
 });
 
-httpServer.listen(3000, function() {
-    console.log('Listening on *:3000');
+var deployPort = process.env.PORT || 3000;
+httpServer.listen(deployPort, function() {
+    console.log('Listening on *:' + deployPort);
 });
