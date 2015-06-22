@@ -13,14 +13,14 @@ The following features are yet to be implemented:
 
 * Most importantly, make the message window auto scroll. Right now , if number of messages increase beyond the height of the message box, it becomes impossible to read them.
 * Implement a better style for the page, right now it is primitive in visual style.
-* If the user is not connected , his messages should not be accpped. Right now his messages are appended to the screen.
+* If the user is not connected , his messages should not be accepted. Right now his messages are appended to the screen.
 * Implement User Groups. This is something with great potential if done properly. IRC has had this for long, but most people don't use it anyway.
 We will implement a way for the users to create groups from within a chat, and allow many users to chat within a group.
 * Allow handling of nicknames.
 
 ## How to Use
 
-Clone the git repo somewhere and cd into it. Tne run npm install in the directory. After that it should be ready to use.
+Clone the git repo somewhere and cd into it. Then run npm install in the directory. After that it should be ready to use.
 
 ```shell
 git clone https://github.com/sdciitmandi/campus-chat-client.git
