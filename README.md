@@ -17,6 +17,7 @@ The following features are yet to be implemented:
 * Implement User Groups. This is something with great potential if done properly. IRC has had this for long, but most people don't use it anyway.
 We will implement a way for the users to create groups from within a chat, and allow many users to chat within a group.
 * Allow handling of nicknames.
+* New Bug, if user is not connected and he closes his tab,the node server thinks that he is a free user.
 
 ## How to Use
 
