@@ -22,20 +22,32 @@
     <script>
     $(document).ready(function() {
         var socket = io();
-        $('form').submit(function() {
-            socket.emit('chat message', $('#m').val());
-            $('#messages').append($('<li class = "sent-message">').text("Your Message : " + $('#m').val()));
-            $('#m').val('');
-            return false;
-        });
-        socket.on('chat message', function(msg) {
-            $('#messages').append($('<li class = "received-message">').text("Stranger : " + msg));
-        });
+        var connected=0;
+
         socket.on('welcome message', function(msg) {
             $('#messages').append($('<li class = "welcome-message">').text(msg));
+	    connected=1;
         });
         socket.on('disconnect message', function(msg) {
             $('#messages').append($('<li class = "disconnect-message">').text(msg));
+	    connected=0;
+        });
+
+       	$('form').submit(function() {
+		if(connected){
+            		socket.emit('chat message', $('#m').val());
+            		$('#messages').append($('<li class = "sent-message">').text("Your Message : " + $('#m').val()));
+            		$('#m').val('');
+		}
+               else{     
+	                $('#messages').append($('<li class = "disconnect-message">').text("Waiting to connect"));
+	       }
+     
+
+	    	return false;
+        });
+       socket.on('chat message', function(msg) {
+            $('#messages').append($('<li class = "received-message">').text("Stranger : " + msg));
         });
     });
     </script>
