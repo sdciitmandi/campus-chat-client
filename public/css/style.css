@@ -30,6 +30,95 @@ form button {
     padding: 10px;
 }
 
+#conversation {
+    font-size: 16px;
+}
+
+#messages {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+input { 
+    padding: 9px; 
+    border: solid 1px #E5E5E5; 
+    outline: 0; 
+    font: normal 13px/100% Verdana, Tahoma, sans-serif; 
+    width: 200px; 
+    background: #FFFFFF; 
+    } 
+   
+.submit input{ 
+    width: auto; 
+    padding: 9px 15px; 
+    background: #617798; 
+    border: 0; 
+    font-size: 14px; 
+    color: rgb(130, 224, 255);
+    }
+
+#rooms{
+
+ font-size: 25px; 
+ 	color: #DA70D6;
+ 	
+  
+}
+#messages li {
+    padding: 5px 10px;
+}
+
+#messages li:nth-child(odd) {
+    background: #eee;
+}
+
+.sent-message {
+    color: green;
+}
+
+.received-message {
+    color: blue;
+}
+
+.welcome-message {
+    color: black;
+}
+
+.disconnect-message {
+    color: red;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font: 13px Helvetica, Arial;
+}
+
+form {
+    background: #000;
+    padding: 3px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+form input {
+    border: 0;
+    padding: 10px;
+    width: 90%;
+    margin-right: .5%;
+}
+
+form button {
+    width: 9%;
+    background: rgb(130, 224, 255);
+    border: none;
+    padding: 10px;
+}
+
 #message-container {
     font-size: 16px;
 }

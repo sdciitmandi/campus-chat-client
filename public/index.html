@@ -11,46 +11,138 @@
 <body>
     <div id="message-container">
         <ul id="messages">
-            <form action="">
-                <input id="m" autocomplete="off" />
-                <button>Send</button>
-            </form>
+            
         </ul>
     </div>
-    <script src="js/jquery.min.js"></script>
+    <!-- Can uncomment this when going in production <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script> -->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>-->
+    <script src="js/jquery.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
+		var socket = io();
+		//var socket = io.connect('http://localhost:3000');
     $(document).ready(function() {
-        var socket = io();
-        var connected=0;
+       // var socket = io();
+        $('form').submit(function() {
+            socket.emit('sendchat', $('#m').val());
+        //    $('#conversation').append($('<li class = "sent-message">').text("Your Message : " + $('#m').val()));
+            $('#m').val('');
+            return false;
+        });
+         socket.on('askname', function(){                                           
+             socket.emit('adduser', prompt("What's your name?"));
+			});
+			
+			socket.on('tryagain', function(warning){
+		// call the server-side function 'adduser' and send one parameter (value of prompt)
+		socket.emit('adduser', prompt("Username exits, Try once again :)"));
+	});
+	
+	// listener, whenever the server emits 'updatechat', this updates the chat body
+	socket.on('updatechat', function (username, data) {
+		$('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
+	});
 
+
+// listener, whenever the server emits 'updaterooms', this updates the room the client is in
+	socket.on('updaterooms', function(rooms) {
+		$('#rooms').empty();
+		
+		$.each(rooms, function(key, value) {
+			
+				$('#rooms').append('<div><bold>' + value + '</bold></div>');
+				
+		});
+	});
+	/*function createRoom(room){
+		socket.emit('createroom', room);
+	}*/
+	
+
+	function switchRoom(room){
+		alert(room);
+		socket.emit('changeroom', room);
+	}
+
+
+	// on load of page
+	$(function(){
+		// when the client clicks SEND
+		$('#datasend').click( function() {
+			var room = $('#data').val();
+			$('#data').val('');
+			// tell server to execute 'sendchat' and send along one parameter
+			socket.emit('createroom', room);
+		});
+	
+		$('#roosend').click( function() {
+			var room = $('#roo').val();
+			$('#roo').val('');
+			// tell server to execute 'sendchat' and send along one parameter
+			socket.emit('changeroom', room);
+		});
+
+
+		// when the client hits ENTER on their keyboard
+		/*$('#data').keypress(function(e) {
+			if(e.which == 13) {
+				$(this).blur();
+				$('#datasend').focus().click();
+			}
+		});*/
+	});
+        socket.on('chat message', function(msg) {
+            $('#messages').append($('<li class = "received-message">').text("Stranger : " + msg));
+        });
         socket.on('welcome message', function(msg) {
-            $('#messages').append($('<li class = "welcome-message">').text(msg));
-	    connected=1;
+            $('#conversation').append($('<li class = "welcome-message">').text(msg));
         });
         socket.on('disconnect message', function(msg) {
-            $('#messages').append($('<li class = "disconnect-message">').text(msg));
-	    connected=0;
-        });
-
-       	$('form').submit(function() {
-		if(connected){
-            		socket.emit('chat message', $('#m').val());
-            		$('#messages').append($('<li class = "sent-message">').text("Your Message : " + $('#m').val()));
-            		$('#m').val('');
-		}
-               else{     
-	                $('#messages').append($('<li class = "disconnect-message">').text("Waiting to connect"));
-	       }
-     
-
-	    	return false;
-        });
-       socket.on('chat message', function(msg) {
-            $('#messages').append($('<li class = "received-message">').text("Stranger : " + msg));
+            $('#conversation').append($('<li class = "disconnect-message">').text(msg));
         });
     });
     </script>
+   
+   
+    
+    <div style="float:right;width:30%;border-left:3px solid black;;padding:10px;overflow:scroll-y;">
+		
+	
+	<b>ROOMS</b>
+	<div id="rooms"></div>
+	<div style="float:left;width:95%;border:3px solid black;height:130px;padding:20px;overflow:scroll-y;">
+	New Room:<input id="data" style="width:80%;" />
+	<input type="submit" id="datasend" value="SUBMIT"  style="width:30%;"  color="red;"/>
+	</div>
+	<div style="float:left;width:95%;border:3px solid black;height:130px;padding:20px;overflow:scroll-y;">
+	Switch Room:<input id="roo" style="width:80%;" />
+	<input type="submit" id="roosend" value="SUBMIT"  style="width:30%;"  background="red;"/>
+	</div>
+	</div>
+	
+	
+	
+	<div style="float:left;width:70%;height:600px;overflow:scroll-y;padding:10px;">
+	<div id="conversation"></div>
+	<b></b>
+			<form action="">
+                <input id="m" autocomplete="on" />
+                <button>Send</button>
+            </form>
+	</div>
+	
+
+
+	
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
