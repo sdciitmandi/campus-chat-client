@@ -47,12 +47,20 @@
 // listener, whenever the server emits 'updaterooms', this updates the room the client is in
 	socket.on('updaterooms', function(rooms) {
 		$('#rooms').empty();
-		
+		var count=0;
+		/*if (rooms.length==0){
+			$('#rooms').append('<div><bold>Currently no rooms are available</bold></div>');
+			}
+			else{*/
 		$.each(rooms, function(key, value) {
 			
-				$('#rooms').append('<div><bold>' + value + '</bold></div>');
+				$('#rooms').append('<div><bold>' + key + '</bold>('+ value +')</div>');
+				count +=1;
 				
 		});
+		if (count==0){
+			$('#rooms').append('<div><bold>Currently no rooms are available</bold></div>');
+			}
 	});
 	/*function createRoom(room){
 		socket.emit('createroom', room);
@@ -82,6 +90,12 @@
 			socket.emit('changeroom', room);
 		});
 
+		$('#namechange').click( function() {
+			var name = $('#name').val();
+			$('#name').val('');
+			// tell server to execute 'sendchat' and send along one parameter
+			socket.emit('changename', name);
+		});
 
 		// when the client hits ENTER on their keyboard
 		/*$('#data').keypress(function(e) {
@@ -91,6 +105,9 @@
 			}
 		});*/
 	});
+		socket.on('alert',function(a){
+			alert(a,'Alert');
+			});
         socket.on('chat message', function(msg) {
             $('#messages').append($('<li class = "received-message">').text("Stranger : " + msg));
         });
@@ -115,12 +132,17 @@
 	<input type="submit" id="datasend" value="SUBMIT"  style="width:30%;"  color="red;"/>
 	</div>
 	<div style="float:left;width:95%;border:3px solid black;height:130px;padding:20px;overflow:scroll-y;">
-	Switch Room:<input id="roo" style="width:80%;" />
+	Switch/Enter Room:<input id="roo" style="width:80%;" />
 	<input type="submit" id="roosend" value="SUBMIT"  style="width:30%;"  background="red;"/>
 	</div>
+	<div style="float:left;width:95%;border:3px solid black;height:130px;padding:20px;overflow:scroll-y;">
+	Change Name:<input id="name" style="width:80%;" />
+	<input type="submit" id="namechange" value="SUBMIT"  style="width:30%;"  color="red;"/>
+	</div>
 	</div>
 	
-	
+	 
+    
 	
 	<div style="float:left;width:70%;height:600px;overflow:scroll-y;padding:10px;">
 	<div id="conversation"></div>
