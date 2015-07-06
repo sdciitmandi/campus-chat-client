@@ -21,7 +21,7 @@ idmap = {}; // Map containing ids of sockets chatting with each other. Map is sy
 
 var usernames = {};// usernames which are currently connected to the chat
 
-var rooms = [];// rooms which are currently available in chat
+var rooms = {};// rooms which are currently available in chat
 
 var userstatus = {}; //current status of users, either they are single or in some room
 
@@ -40,6 +40,26 @@ io.sockets.on('connection', function(socket){
 	 //console.log('New user joined' + socket.id);
 	 //asks name to the user
 	socket.emit('askname');
+	
+	socket.on('changename', function(newname){ 
+		if(usernames[newname]!=undefined){
+			socket.emit('alert', 'username already exists');
+			return ;
+			}
+		var oldname=socket.username;
+		socket.username=newname;
+		delete usernames[oldname];
+		usernames[newname]=newname;
+		
+			if(userstatus[socket.id]== "free"){
+		if(idmap[socket.id]) io.to(idmap[socket.id]).emit('updatechat','SERVER' ,oldname+' has changed his name to '+newname);
+			io.to(socket.id).emit('updatechat','SERVER' ,'You have changed your name to '+newname);}
+		else if(userstatus[socket.id] =='member'){
+			socket.broadcast.to(socket.room).emit('updatechat', 'SERVER', oldname+' has changed his name to '+newname);
+		socket.emit('updatechat', 'SERVER', 'You have changed your name to '+newname);
+			}
+		
+		});
 	
 	// when the user emits 'adduser', this listens and executes
 	socket.on('adduser', function(username){
@@ -64,18 +84,19 @@ io.sockets.on('connection', function(socket){
 		
 		if(freeUsers.length && socket.username!=undefined) { // Chechk if there are some free users
 		var st1 = freeUsers.shift(); // Remove the user who has been waiting longest
-		if(socket.username!=undefined){
+		
 		idmap[socket.id] = st1;
 		idmap[st1] = socket.id;
 		console.log('Connected' + socket.id + '  to  ' + st1);
 		io.to(socket.id).emit('welcome message',welcomeMessage);
-		io.to(st1).emit('welcome message',welcomeMessage);}
+		io.to(st1).emit('welcome message',welcomeMessage);
 			}
 		else if(socket.username!= undefined){
 		freeUsers.push(socket.id); // Else push the user in the queue for later processing
 		}
 		
-		
+	
+			
 			socket.emit('updaterooms',rooms);
 			
 		// send client to room 1
@@ -94,7 +115,9 @@ io.sockets.on('connection', function(socket){
 		console.log('hello1\n');
 		//socket.broadcast.to(newroom).emit('updatechat', 'SERVER', socket.username+' has joined this room');
 		if(userstatus[socket.id]== "member"){
+			var room_count=Object.keys(io.sockets.adapter.rooms[socket.room]).length;
 		socket.leave(socket.room);
+		rooms[socket.room]=room_count-1;
 		console.log('hello2\n');
 		// sent message to OLD room
 		socket.broadcast.to(socket.room).emit('updatechat', 'SERVER', socket.username+' has left this room');
@@ -120,12 +143,15 @@ io.sockets.on('connection', function(socket){
 			}
 		
 		socket.join(newroom);
+		rooms[newroom]=Object.keys(io.sockets.adapter.rooms[newroom]).length;
+
 		userstatus[socket.id]='member';
 		socket.emit('updatechat', 'SERVER', 'you have connected to '+ newroom);
 		
 		// update socket session room title
 		socket.room = newroom;
 		socket.broadcast.to(newroom).emit('updatechat', 'SERVER', socket.username+' has joined this room');
+		socket.broadcast.emit('updaterooms',rooms);
 		socket.emit('updaterooms', rooms);
 	});
 	
@@ -147,13 +173,21 @@ io.sockets.on('connection', function(socket){
 				io.to(st3).emit('welcome message',welcomeMessage);
 			}
 			else freeUsers.push(st2);
-			console.log('hello4\n');
+			//console.log('hello4\n');
 		}
 		else{freeUsers.shift();}
 			}
-		rooms.push(roomname);
+			else if(userstatus[socket.id] == 'member'){
+				var room_count=Object.keys(io.sockets.adapter.rooms[socket.room]).length;
+		socket.leave(socket.room);
+		rooms[socket.room]=room_count-1;
+			socket.broadcast.to(socket.room).emit('updatechat', 'SERVER', socket.username+' has left this room');
+				}
+		
 		console.log('\n'+roomname+'   '+ socket.username);
 		socket.join(roomname);
+		rooms[roomname]=Object.keys(io.sockets.adapter.rooms[roomname]).length;
+
 		socket.room = roomname;
 		userstatus[socket.id]="member";
 		socket.emit('updatechat', 'SERVER', 'you have connected to '+roomname);
@@ -209,11 +243,11 @@ io.sockets.on('connection', function(socket){
 	});
 	
 	//When message comes , send it to the id mapped to socket's
-  socket.on('chat message', function(msg){
+ /* socket.on('chat message', function(msg){
      console.log('message: ' + msg);
    if(idmap[socket.id]) io.to(idmap[socket.id]).emit('chat message', msg);
    console.log(idmap);
-  });
+  });*/
 });
 
 
@@ -223,3 +257,4 @@ httpServer.listen(deployPort, function() {
     console.log('Listening on *:' + deployPort);
 });
 
+//var room_count = Object.keys(io.sockets.adapter.rooms[roomname]).length;
