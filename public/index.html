@@ -66,6 +66,24 @@
 		socket.emit('createroom', room);
 	}*/
 	
+	
+	/*socket.on('updateusers', function(users) {
+		$('#users').empty();
+		var count=0;
+		/*if (rooms.length==0){
+			$('#rooms').append('<div><bold>Currently no rooms are available</bold></div>');
+			}
+			else{
+		$.each(users, function(key, value) {
+			
+				$('#users').append('<div><bold>' + key + '</bold>('+ value +')</div>');
+				count +=1;
+				
+		});
+		if (count==0){
+			$('#users').append('<div><bold>Currently no users are available</bold></div>');
+			}
+	});*/
 
 	function switchRoom(room){
 		alert(room);
@@ -96,6 +114,17 @@
 			// tell server to execute 'sendchat' and send along one parameter
 			socket.emit('changename', name);
 		});
+		
+		$('#imagefile').bind('change', function(e){
+      var data = e.originalEvent.target.files[0];
+      var reader = new FileReader();
+      reader.onload = function(evt){
+      //  image('YOU', evt.target.result);
+        socket.emit('user image', evt.target.result);
+      };
+      reader.readAsDataURL(data);
+      
+    });
 
 		// when the client hits ENTER on their keyboard
 		/*$('#data').keypress(function(e) {
@@ -105,6 +134,15 @@
 			}
 		});*/
 	});
+	
+	
+	socket.on('userimage', image);
+	
+	
+  function image (from, base64Image) {
+    $('#conversation').append($('<p>').append($('<b>').text(from), '<img src="' + base64Image + '"style="width:444px;height:350px;"/>'));
+  }
+
 		socket.on('alert',function(a){
 			alert(a,'Alert');
 			});
@@ -141,17 +179,29 @@
 	</div>
 	</div>
 	
+	
+<!--	 <div style="float:left;width:20%;border-right:3px solid black;;padding:10px;overflow:scroll-y;">
+		
+	
+	<b>USERS</b>
+	<div id="users"></div>
+	
+	</div>-->
 	 
     
 	
-	<div style="float:left;width:70%;height:600px;overflow:scroll-y;padding:10px;">
+	<div style="width:70%;height:700px;overflow:scroll-y;padding:10px;">
 	<div id="conversation"></div>
 	<b></b>
+	<b></b><b></b><b></b>	
+	</div>
 			<form action="">
                 <input id="m" autocomplete="on" />
                 <button>Send</button>
+                 <div class="filebutton">Send Image<input type="file" id="imagefile" accept="image/*"></div>
             </form>
-	</div>
+            
+	
 	
 
 
