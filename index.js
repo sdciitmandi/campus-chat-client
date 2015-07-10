@@ -112,6 +112,8 @@ io.sockets.on('connection', function(socket){
 	
 	
 	socket.on('changeroom', function(newroom){
+		
+		
 		console.log('hello1\n');
 		//socket.broadcast.to(newroom).emit('updatechat', 'SERVER', socket.username+' has joined this room');
 		if(userstatus[socket.id]== "member"){
@@ -153,6 +155,7 @@ io.sockets.on('connection', function(socket){
 		socket.broadcast.to(newroom).emit('updatechat', 'SERVER', socket.username+' has joined this room');
 		socket.broadcast.emit('updaterooms',rooms);
 		socket.emit('updaterooms', rooms);
+	
 	});
 	
 	socket.on('createroom',function(roomname){
@@ -212,16 +215,36 @@ io.sockets.on('connection', function(socket){
 			}
 	});
 	
+	 socket.on('user image', function (data) {
+     // console.log(msg);
+     if(userstatus[socket.id]!= "free"){
+		io.sockets.in(socket.room).emit('userimage', socket.username, data);}
+		else{
+			if(idmap[socket.id]) io.to(idmap[socket.id]).emit('userimage',socket.username ,data);
+			io.to(socket.id).emit('userimage','YOU' ,data);
+			}
+     
+     
+    //  socket.broadcast.emit('user image', socket.username, msg);
+    });
+	
 	//Handling Code when a User disconnects
 	socket.on('disconnect', function() {
 		if(userstatus[socket.id] == "member"){
+			
+		
 		// remove the username from global usernames list
 		delete usernames[socket.username];
 		// update list of users in chat, client-side
 		io.sockets.emit('updateusers', usernames);
 		// echo globally that this client has left
 		socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected');
-		socket.leave(socket.room);
+		
+			
+			socket.leave(socket.room);
+		//socket.leave(socket.room);
+		rooms[socket.room]-=1;
+		socket.broadcast.emit('updaterooms',rooms);
 	}
 	else if(userstatus[socket.id] == "free"){
 		var st2 = idmap[socket.id];
